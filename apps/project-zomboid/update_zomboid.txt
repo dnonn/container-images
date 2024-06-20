@@ -1,0 +1,15 @@
+// Set to 0 if updating multiple servers at once.
+@ShutdownOnFailedCommand 1
+
+// Unattended install.
+@NoPromptForPassword 1
+
+force_install_dir /opt/pzserver/
+
+// For servers that don't need a login.
+login anonymous
+
+// Install the pz dedicated server.
+app_update 380870 validate
+
+quit

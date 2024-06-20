@@ -1,0 +1,16 @@
+---
+version: 3
+
+includes:
+  container:
+    dir: .taskfiles/container
+    taskfile: .taskfiles/container
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task -l
+
+vars:
+  default_registry: ghcr.io/dnonn
