@@ -7,6 +7,47 @@ vars:
   goss_folder: "{{ .ROOT_DIR }}/.goss"
 
 tasks:
+  default:
+    desc: Build and run the app
+    summary: |
+      Args:
+        app: App to build (required)
+        name: Name of the container to run (default: {{.app}})
+        channel: Channel to build for the app (default: stable)
+        registry: Registry to prefix the image with (default: {{.default_registry}})
+        detach: Whether to run the container in detached mode (default: false)
+        interactivity: Whether to run the container in interactivity mode (default: true)
+        remove: Whether to remove the container when it exits (default: true)
+    vars:
+      app: "{{ .app }}"
+      name: "{{ .name | default .app }}"
+      channel: '{{ .channel | default "stable" }}'
+      registry: "{{ .registry | default .default_registry }}"
+      detached: '{{ .detached | default "false" }}'
+      interactivity: '{{ .interactivity | default "true" }}'
+      # Helper vars
+      tag: "{{ .registry }}/{{ .app }}:{{ .channel }}"
+    requires:
+      vars:
+        - app
+    cmds:
+      - task: check-container
+        vars:
+          name: "{{ .name }}"
+          exists: "false"
+      - task: build
+        vars:
+          app: "{{ .app }}"
+          channel: '{{ .channel | default "stable" }}'
+          registry: "{{ .registry | default .default_registry }}"
+      - task: run
+        vars:
+          app: "{{ .app }}"
+          channel: '{{ .channel | default "stable" }}'
+          registry: "{{ .registry | default .default_registry }}"
+          detached: '{{ .detached | default "false" }}'
+          interactivity: '{{ .interactivity | default "true" }}'
+
   build:
     desc: Build container image
     summary: |
@@ -51,7 +92,7 @@ tasks:
         msg: |
           No metadata.yaml found in "{{ .app_folder }}"
     cmd: >-
-      sudo docker build
+      docker build
       --tag {{ .registry }}/{{ .app }}:{{ .channel }}
       --build-arg CHANNEL={{ .channel }}
       --build-arg VERSION={{ .app_version }}
@@ -137,3 +178,112 @@ tasks:
     status:
       - test -f "{{ .goss_folder }}/goss"
       - test -f "{{ .goss_folder }}/dgoss"
+
+  run:
+    desc: Run container
+    summary: |
+      Args:
+        app: App to build (required)
+        channel: Channel to build for the app (default: stable)
+        registry: Registry to prefix the image with (default: {{.default_registry}})
+        detached: Whether to run the container in detached mode (default: false)
+        interactivity: Whether to run the container in interactivity mode (default: true)
+        remove: Whether to remove the container when it exits (default: true)
+        name: Name to assign to the container (default {{.app}})
+    silent: false
+    vars:
+      # User vars
+      app: "{{ .app }}"
+      channel: '{{ .channel | default "stable" }}'
+      registry: "{{ .registry | default .default_registry }}"
+      detached: '{{ .detached | default "false" }}'
+      interactivity: '{{ .interactivity | default "true" }}'
+      remove: '{{ .remove | default "true" }}'
+      name: '{{ .name | default .app }}'
+
+      # Helper vars
+      tag: "{{ .registry }}/{{ .app }}:{{ .channel }}"
+    requires:
+      vars:
+        - app
+    cmds:
+      - task: check-image
+        vars:
+          exists: "true"
+          tag: "{{ .tag }}"
+      - task: check-container
+        vars:
+          exists: "false"
+          name: "{{ .name }}"
+      - >-
+          docker run
+          --name {{ .name }}
+          {{ if eq .detached "true" }}--detach{{ end }}
+          {{ if eq .interactivity "true" }}-it{{ end }}
+          {{ if eq .remove "true" }}--rm{{ end }}
+          {{ .tag }}
+
+  remove:
+    desc: Stop and remove container
+    summary: |
+      Args:
+        name: Name of container to remove (required)
+    silent: true
+    vars:
+      name: "{{ .name }}"
+    requires:
+      vars:
+        - name
+    cmds:
+      - task: check-container
+        vars:
+          exists: "true"
+          name: "{{ .name }}"
+      - docker stop "{{ .name }}"
+      - docker rm "{{ .name }}"
+
+  check-container:
+    desc: Check if the container meets the preconditions
+    summary: |
+      Args:
+        name: Whether the container exists (required)
+        exists: Whether the container exists (default: true)
+    vars:
+      name: "{{ .name }}"
+      exists: "{{ .exists }}"
+    requires:
+      vars:
+        - name
+        - exists
+    silent: true
+    internal: true
+    preconditions:
+      - sh: >-
+          if [ {{ if eq .exists "true" }}!{{ end }} $(docker ps -aqf name={{ .name }}) ]; then
+            exit 1
+          fi
+        msg: |
+          Docker container "{{ .name }}" already exists
+
+  check-image:
+    desc: Check if the image meets the preconditions
+    summary: |
+      Args:
+        tag: Whether the container exists (required)
+        exists: Whether the container exists (default: true)
+    vars:
+      tag: "{{ .tag }}"
+      exists: "{{ .exists }}"
+    requires:
+      vars:
+        - tag
+        - exists
+    silent: true
+    internal: true
+    preconditions:
+      - sh: >-
+          if [ {{ if eq .exists "true" }}!{{ end }} $(docker images -q {{ .tag }}) ]; then
+            exit 1
+          fi
+        msg: |
+          Docker image "{{ .tag }}" does not exist
