@@ -45,4 +45,6 @@ jobs:
       - build-images
     if: ${{ always() && needs.build-images.result != 'failure' }}}
     uses: ./.github/workflows/workflow_call-render-readme.yaml
+    permissions:
+      contents: write
     secrets: inherit
