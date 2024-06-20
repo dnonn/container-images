@@ -35,4 +35,4 @@ RUN \
 COPY ./entrypoint.sh /entrypoint.sh
 
 VOLUME [ $ZOMBOID_PATH ]
-CMD ["/bin/sh", "/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]
