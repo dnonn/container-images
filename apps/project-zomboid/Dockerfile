@@ -11,25 +11,27 @@ LABEL dev.image.target_os=$TARGETOS
 LABEL org.opencontainers.image.source="https://github.com/steamcmd/docker"
 
 ENV \
-    ZOMBOID_PATH=/zomboid
-    ADMIN_PASSWORD=changeme
-    IP=0.0.0.0
-    PORT=16261
-    SERVER_NAME=changeme
-    MAX_RAM=4096m
-    STEAM_VAC=true
+    ZOMBOID_PATH=/zomboid \
+    ADMIN_PASSWORD=changeme \
+    IP=0.0.0.0 \
+    PORT=16261 \
+    SERVER_NAME=changeme \
+    MAX_RAM=4096m \
+    STEAM_VAC=true \
     USE_STEAM=true
 
 USER root
+
+COPY ./update_zomboid.txt /app/update_zomboid.txt
 
 #hadolint ignore=DL3018,DL3013
 RUN \
     apk add --no-cache \
         bash \
         ca-certificates \
+    && mkdir $ZOMBOID_PATH \
     && chmod -R 755 $ZOMBOID_PATH
 
-COPY ./update_zomboid.txt /app/update_zomboid.txt
 COPY ./entrypoint.sh /entrypoint.sh
 
 VOLUME [ $ZOMBOID_PATH ]

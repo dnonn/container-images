@@ -1,5 +1,6 @@
 ---
-version: "3"
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: 3
 
 vars:
   cue_file: "{{ .ROOT_DIR }}/.ci/lint/metadata.rules.cue"
@@ -31,7 +32,7 @@ tasks:
       metadata_file: "{{ .app_folder }}/metadata.yaml"
       app_version:
         sh: >-
-          [ ! -f "{{ .version_script }}" ] || python "{{ .version_script }}" "{{ .channel }}"
+          [ ! -f "{{ .version_script }}" ] || {{.PYTHON_BIN}} "{{ .version_script }}" "{{ .channel }}"
       all_platforms:
         sh: >-
           [ ! -f "{{ .metadata_file }}" ] || yq -r '.channels[] | select(.name=="{{ .channel }}").platforms | join(",")' "{{ .metadata_file }}"
@@ -50,7 +51,7 @@ tasks:
         msg: |
           No metadata.yaml found in "{{ .app_folder }}"
     cmd: >-
-      docker buildx build
+      sudo docker build
       --tag {{ .registry }}/{{ .app }}:{{ .channel }}
       --build-arg CHANNEL={{ .channel }}
       --build-arg VERSION={{ .app_version }}

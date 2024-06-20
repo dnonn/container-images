@@ -1,16 +1,28 @@
 ---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: 3
+
+vars:
+  default_registry: ghcr.io/dnonn
+  # Files
+  PIP_REQUIREMENTS_FILE: "{{.ROOT_DIR}}/requirements.txt"
+  # Binaries
+  PYTHON_BIN: python3
+
+env:
+  VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
+  DOCKER_BUILDKIT: 1
 
 includes:
   container:
     dir: .taskfiles/container
     taskfile: .taskfiles/container
+  workstation:
+    dir: .taskfiles/workstation
+    taskfile: .taskfiles/workstation
 
 tasks:
   default:
     silent: true
     cmds:
       - task -l
-
-vars:
-  default_registry: ghcr.io/dnonn
