@@ -12,7 +12,7 @@ LABEL org.opencontainers.image.source="https://github.com/steamcmd/docker"
 
 ENV \
     ZOMBOID_PATH=/zomboid \
-    ADMIN_PASSWORD=changeme \
+    ADMIN_PASSWORD=changemee \
     IP=0.0.0.0 \
     PORT=16261 \
     SERVER_NAME=changeme \
