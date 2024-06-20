@@ -1,5 +1,11 @@
 ARG VERSION
+FROM docker.io
 FROM docker.io/steamcmd/steamcmd:$VERSION
+
+ENV JAVA_HOME=/opt/java/openjdk
+# pz expects the 64-bit jre to be in /bin/jre64
+COPY --from=amd64/eclipse-temurin:22-jre-alpine $JAVA_HOME /bin/jre64
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 ARG TARGETPLATFORM
 ARG TARGETARCH
@@ -18,7 +24,8 @@ ENV \
     SERVER_NAME=changeme \
     MAX_RAM=4096m \
     STEAM_VAC=true \
-    USE_STEAM=true
+    USE_STEAM=true \
+    TIMEOUT=60
 
 USER root
 
@@ -32,7 +39,8 @@ RUN \
     && mkdir $ZOMBOID_PATH \
     && chmod -R 755 $ZOMBOID_PATH
 
-COPY ./entrypoint.sh /entrypoint.sh
+COPY ./entrypoint.sh /bin/entrypoint.sh
+RUN chmod +x /bin/entrypoint.sh
 
 VOLUME [ $ZOMBOID_PATH ]
-ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh"]

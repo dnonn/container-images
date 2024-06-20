@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 
-function update() {
-  echo "[INFO] Updating server"
+set +x -o pipefail
 
-  steamcmd.sh +runscript "/app/install_server.scmd"
+update() {
+  echo "[INFO] Updating server"
+  echo "We here: `dirname $0`"
+
+  steamcmd +runscript "/app/update_zomboid.txt"
 
   echo "[INFO] Server updated"
 }
 
-function start() {
+start() {
   echo "[INFO] Starting server"
   
   if [[ -z "$BIND_IP" ]] || [[ "$BIND_IP" == "0.0.0.0" ]]; then
-    BIND_IP=($(hostname -I))
-    BIND_IP="${BIND_IP[0]}"
+    BIND_IP=($(hostname -i))
+    BIND_IP=${BIND_IP[0]}
   else
     BIND_IP="$BIND_IP"
   fi
