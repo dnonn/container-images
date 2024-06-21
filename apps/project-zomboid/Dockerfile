@@ -16,17 +16,22 @@ ARG PGID=5000
 
 ENV USER steam
 ENV GROUP steam
+# The USER directive is docker doesn't set the HOME environment variable
+# so we set it explicitly.
+ENV HOME /home/$USER
 
 RUN groupadd -g $PGID $GROUP \
-    && useradd -m -u $PUID -g $PGID $USER \
-    && mkdir /data \
-    && chown -R $USER:$GROUP /data
+    && useradd -m -d $HOME -u $PUID -g $PGID $USER
 
 COPY --chown=$USER:$GROUP ./update_zomboid.txt /app/update_zomboid.txt
-COPY --chown=$USER:$GROUP ./entrypoint.sh /app/entrypoint.sh
+COPY --chown=$USER:$GROUP ./entrypoint.sh /entrypoint.sh
+
+RUN mkdir /data \
+    && chown -R $USER:$GROUP /data \
+    && chown -R $USER:$GROUP /app
 
 USER $USER:$GROUP
 
-WORKDIR /app
+WORKDIR $HOME
 VOLUME ["/data"]
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
