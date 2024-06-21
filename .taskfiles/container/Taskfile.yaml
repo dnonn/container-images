@@ -57,7 +57,7 @@ tasks:
         multiplatform: Build multi-platform image (default: false)
         push: Push the image to the registry (default: false)
         registry: Registry to prefix the image with (default: {{.default_registry}})
-    silent: true
+    silent: false
     vars:
       # User vars
       app: "{{ .app }}"
@@ -113,7 +113,7 @@ tasks:
         app: App to build (required)
         channel: Channel to build for the app (default: stable)
         registry: Registry to prefix the image with (default: {{.default_registry}})
-    silent: true
+    silent: false
     vars:
       # User vars
       app: "{{ .app }}"
@@ -164,7 +164,7 @@ tasks:
       - '"{{ .goss_folder}}/dgoss" run "{{ .registry }}/{{ .app }}:{{ .channel }}" {{if eq .test_type "cli"}}tail -f /dev/null{{end}}'
 
   download-goss:
-    silent: true
+    silent: false
     internal: true
     vars:
       # renovate: datasource=github-releases depName=goss-org/goss versionTemplate=^(?<version>.*)$
@@ -228,7 +228,7 @@ tasks:
     summary: |
       Args:
         name: Name of container to remove (required)
-    silent: true
+    silent: false
     vars:
       name: "{{ .name }}"
     requires:
@@ -255,7 +255,7 @@ tasks:
       vars:
         - name
         - exists
-    silent: true
+    silent: false
     internal: true
     preconditions:
       - sh: >-
@@ -278,7 +278,7 @@ tasks:
       vars:
         - tag
         - exists
-    silent: true
+    silent: false
     internal: true
     preconditions:
       - sh: >-
