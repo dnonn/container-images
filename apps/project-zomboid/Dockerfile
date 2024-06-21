@@ -24,7 +24,11 @@ ENV \
 WORKDIR /app
 COPY ./update_zomboid.txt ./update_zomboid.txt
 COPY ./entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
+
+RUN mkdir /root \
+    && chmod -R 755 /root
+    && chmod -R 755 /app
+    && chmod +x ./entrypoint.sh
 
 VOLUME ["/data"]
 ENTRYPOINT ["./entrypoint.sh"]
