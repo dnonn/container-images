@@ -20,9 +20,11 @@ COPY ./entrypoint.sh /entrypoint.sh
 
 RUN chmod -R 777 $HOME \
     && chmod -R 777 /tmp \
+    && mkdir /data \
+    && chmod -R 766 /data \
     && chmod +x /entrypoint.sh
 
-USER nobody:nogroup 
+USER nobody:nogroup
 
 VOLUME ["/data"]
 ENTRYPOINT ["/entrypoint.sh"]
