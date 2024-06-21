@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 def get_latest(channel):
-    return "ubuntu"
+    return "0.1.0"
 
 if __name__ == "__main__":
     import sys

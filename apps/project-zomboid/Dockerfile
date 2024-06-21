@@ -1,6 +1,6 @@
 ARG VERSION
 
-FROM docker.io/steamcmd/steamcmd:$VERSION
+FROM docker.io/steamcmd/steamcmd:ubuntu-24
 
 ARG TARGETPLATFORM
 ARG TARGETARCH
@@ -11,20 +11,22 @@ LABEL dev.image.target_architecture=$TARGETARCH
 LABEL dev.image.target_os=$TARGETOS
 LABEL org.opencontainers.image.source="https://github.com/steamcmd/docker"
 
-USER root
-ENV HOME /app
-WORKDIR $HOME
+ARG PUID=5000
+ARG PGID=5000
 
-COPY ./update_zomboid.txt ./update_zomboid.txt
-COPY ./entrypoint.sh /entrypoint.sh
+ENV USER steam
+ENV GROUP steam
 
-RUN chmod -R 777 $HOME \
-    && chmod -R 777 /tmp \
+RUN groupadd -g $PGID $GROUP \
+    && useradd -m -u $PUID -g $PGID $USER \
     && mkdir /data \
-    && chmod -R 777 /data \
-    && chmod +x /entrypoint.sh
+    && chown -R $USER:$GROUP /data
 
-USER nobody:nogroup
+COPY --chown=$USER:$GROUP ./update_zomboid.txt /app/update_zomboid.txt
+COPY --chown=$USER:$GROUP ./entrypoint.sh /app/entrypoint.sh
 
+USER $USER:$GROUP
+
+WORKDIR /app
 VOLUME ["/data"]
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
