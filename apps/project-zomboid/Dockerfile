@@ -23,11 +23,12 @@ ENV HOME /home/$USER
 RUN groupadd -g $PGID $GROUP \
     && useradd -m -d $HOME -u $PUID -g $PGID $USER
 
-COPY --chown=$USER:$GROUP ./update_zomboid.txt /app/update_zomboid.txt
+COPY --chown=$USER:$GROUP ./scripts/update_zomboid.txt /scripts/update_zomboid.txt
 COPY --chown=$USER:$GROUP ./entrypoint.sh /entrypoint.sh
 
 RUN mkdir /data \
     && chown -R $USER:$GROUP /data \
+    && mkdir /app \
     && chown -R $USER:$GROUP /app
 
 USER $USER:$GROUP

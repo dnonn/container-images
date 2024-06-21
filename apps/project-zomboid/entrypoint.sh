@@ -2,7 +2,7 @@
 
 set +x -o pipefail
 
-steamcmd +runscript "/app/update_zomboid.txt"
+steamcmd +runscript "/scripts/update_zomboid.txt"
 
 if [ -z "$IP" ] || [ "$IP" == "0.0.0.0" ]; then
   IP=($(hostname -i))
