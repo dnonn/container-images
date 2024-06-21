@@ -15,10 +15,11 @@ ENV HOME /app
 
 WORKDIR $HOME
 COPY ./update_zomboid.txt ./update_zomboid.txt
-COPY ./entrypoint.sh ./entrypoint.sh
+COPY ./entrypoint.sh /entrypoint.sh
 
 RUN chmod -R 755 $HOME \
-    && chmod +x ./entrypoint.sh
+    && chmod -R 755 /tmp
+    && chmod +x /entrypoint.sh
 
 VOLUME ["/data"]
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
