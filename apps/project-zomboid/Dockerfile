@@ -1,4 +1,5 @@
 ARG VERSION
+
 FROM docker.io/steamcmd/steamcmd:$VERSION
 
 ARG TARGETPLATFORM
@@ -10,23 +11,13 @@ LABEL dev.image.target_architecture=$TARGETARCH
 LABEL dev.image.target_os=$TARGETOS
 LABEL org.opencontainers.image.source="https://github.com/steamcmd/docker"
 
-ENV \
-    ADMIN_PASSWORD=changeme \
-    IP=0.0.0.0 \
-    PORT=16261 \
-    SERVER_NAME=changeme \
-    MAX_RAM=4096m \
-    STEAM_VAC=true \
-    USE_STEAM=true \
-    TIMEOUT=60 \
-    TZ="Etc/UTC"
+ENV HOME /opt
 
 WORKDIR /app
 COPY ./update_zomboid.txt ./update_zomboid.txt
 COPY ./entrypoint.sh ./entrypoint.sh
 
-RUN mkdir /root \
-    && chmod -R 755 /root \
+RUN chmod -R 755 /opt \
     && chmod -R 755 /app \
     && chmod +x ./entrypoint.sh
 
