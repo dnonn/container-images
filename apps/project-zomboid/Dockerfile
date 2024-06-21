@@ -17,7 +17,8 @@ WORKDIR /app
 COPY ./update_zomboid.txt ./update_zomboid.txt
 COPY ./entrypoint.sh ./entrypoint.sh
 
-RUN chmod -R 755 $HOME \
+RUN mkdir $HOME \
+    && chmod -R 755 $HOME \
     && chmod -R 755 /app \
     && chmod +x ./entrypoint.sh
 
