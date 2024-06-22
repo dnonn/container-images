@@ -15,7 +15,7 @@ else
   USE_STEAM="-nosteam"
 fi
 
-exec /app/start-server.sh \
+exec "${HOME}/ZomboidDedicatedServer/start-server.sh" \
   -cachedir=/data \
   -ip $IP \
   -port ${PORT:-16261} \

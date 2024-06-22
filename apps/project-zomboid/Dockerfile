@@ -27,9 +27,7 @@ COPY --chown=$USER:$GROUP ./scripts/update_zomboid.txt /scripts/update_zomboid.t
 COPY --chown=$USER:$GROUP ./entrypoint.sh /entrypoint.sh
 
 RUN mkdir /data \
-    && chown -R $USER:$GROUP /data \
-    && mkdir /app \
-    && chown -R $USER:$GROUP /app
+    && chown -R $USER:$GROUP /data
 
 USER $USER:$GROUP
 

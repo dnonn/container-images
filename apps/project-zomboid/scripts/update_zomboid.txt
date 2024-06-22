@@ -4,7 +4,7 @@
 // Unattended install.
 @NoPromptForPassword 1
 
-force_install_dir /app
+force_install_dir /home/steam/ZomboidDedicatedServer
 
 // For servers that don't need a login.
 login anonymous
