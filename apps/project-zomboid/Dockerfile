@@ -1,6 +1,14 @@
 ARG VERSION
 
+FROM docker.io/rust:alpine as builder
+WORKDIR /app
+COPY ./zomboid-manager .
+RUN apk add alpine-sdk
+RUN cargo build --release
+
 FROM docker.io/steamcmd/steamcmd:ubuntu-24
+
+ENV INSTALL_PATH=/app
 
 ARG TARGETPLATFORM
 ARG TARGETARCH
@@ -16,21 +24,25 @@ ARG PGID=5000
 
 ENV USER steam
 ENV GROUP steam
-# The USER directive is docker doesn't set the HOME environment variable
-# so we set it explicitly.
 ENV HOME /home/$USER
 
 RUN groupadd -g $PGID $GROUP \
     && useradd -m -d $HOME -u $PUID -g $PGID $USER
 
-COPY --chown=$USER:$GROUP ./scripts/update_zomboid.txt /scripts/update_zomboid.txt
+WORKDIR /app
+COPY --from=builder --chown=$USER:$GROUP /app/target/release/server-manager .
 COPY --chown=$USER:$GROUP ./entrypoint.sh /entrypoint.sh
 
 RUN mkdir /data \
-    && chown -R $USER:$GROUP /data
+    && chown -R $USER:$GROUP /data \
+    && chown -R $USER:$GROUP /app
 
 USER $USER:$GROUP
 
-WORKDIR $HOME
+ENV INSTALL_PATH /app
+ENV SERVER_ARGUMENTS -adminpassword,CHANGEME,-cachedir,/data
+ENV EXIT_TIMEOUT 900
+ENV RUST_LOG "info"
+
 VOLUME ["/data"]
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/entrypoint.sh", "/app/server-manager"]
