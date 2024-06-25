@@ -13,15 +13,11 @@ pub fn get_start_command(install_path: &str) -> String {
 }
 
 fn build_start_command(install_path: &str, exe: &str, java_bin: &str, linux_dir: &str, java_lib: &str) -> String {
-  let path = [
-    format!("{}/{}", install_path, &java_bin),
-    "$PATH",
-  ].join(":");
-
+  let path = format!("{}/{}:$PATH", install_path, &java_bin);
   let ld_library_path = [
       format!("{}/{}", install_path, linux_dir),
       format!("{}/natives", install_path),
-      format!("{}/{}", install_path, java_lib)
+      format!("{}/{}", install_path, java_lib),
       install_path.to_string(),
   ].join(":");
 
