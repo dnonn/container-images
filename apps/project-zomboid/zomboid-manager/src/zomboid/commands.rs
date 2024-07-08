@@ -1,3 +1,4 @@
+use std::env;
 use std::process::Command;
 
 pub fn get_start_command(install_path: &str) -> String {
@@ -13,7 +14,11 @@ pub fn get_start_command(install_path: &str) -> String {
 }
 
 fn build_start_command(install_path: &str, exe: &str, java_bin: &str, linux_dir: &str, java_lib: &str) -> String {
-  let path = format!("{}/{}:$PATH", install_path, &java_bin);
+  let path = format!("{}/{}:{}",
+    install_path,
+    java_bin,
+    env::var("PATH").unwrap_or_default());
+
   let ld_library_path = [
       format!("{}/{}", install_path, linux_dir),
       format!("{}/natives", install_path),
