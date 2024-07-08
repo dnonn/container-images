@@ -5,7 +5,7 @@ concurrency:
   group: container-release
   cancel-in-progress: false
 
-on:
+# on:
   # workflow_dispatch:
   #   inputs:
   #     apps:
