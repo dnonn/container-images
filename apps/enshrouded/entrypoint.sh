@@ -56,8 +56,8 @@ fi
 if ! touch "${ENSHROUDED_PATH}/savegame/test"; then
     echo ""
     echo "$(timestamp) ERROR: The ownership of /home/steam/enshrouded/savegame is not correct and the server will not be able to save..."
-    echo "the directory that you are mounting into the container needs to be owned by 10000:10000"
-    echo "from your container host attempt the following command 'chown -R 10000:10000 /your/enshrouded/folder'"
+    echo "the directory that you are mounting into the container needs to be owned by 5000:5000"
+    echo "from your container host attempt the following command 'chown -R 5000:5000 /your/enshrouded/folder'"
     echo ""
     exit 1
 fi
