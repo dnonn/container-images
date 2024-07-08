@@ -47,4 +47,5 @@ Each Image will be built with a `rolling` tag, along with tags specific to it's 
 
 Container | Channel | Image
 --- | --- | ---
+[enshrouded](https://github.com/dnonn/container-images/pkgs/container/enshrouded) | stable | ghcr.io/dnonn/enshrouded
 [project-zomboid](https://github.com/dnonn/container-images/pkgs/container/project-zomboid) | stable | ghcr.io/dnonn/project-zomboid
