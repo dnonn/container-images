@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && pip install -r ./requirements.txt
 
 # build ffmpeg
-FROM python:3.11.8-slim-bookworm as ffmpeg-builder
+FROM python:3.11.8-slim-bookworm AS ffmpeg-builder
 
 ARG TARGETPLATFORM
 
@@ -27,7 +27,7 @@ COPY resources/ffmpeg_download.py ffmpeg_download.py
 RUN python ffmpeg_download.py $TARGETPLATFORM
 
 # build final image
-FROM python:3.11.8-slim-bookworm as tubearchivist
+FROM python:3.11.8-slim-bookworm AS tubearchivist
 
 ARG INSTALL_DEBUG
 
