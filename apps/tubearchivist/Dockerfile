@@ -66,6 +66,9 @@ COPY --from=builder /app /app
 COPY ./resources/run.sh /app
 COPY ./resources/uwsgi.ini /app
 
+RUN chmod 777 /app/staticfiles \
+    && chmod 777 /etc/nginx/sites-available
+
 # volumes
 VOLUME /cache
 VOLUME /youtube
