@@ -49,3 +49,4 @@ Container | Channel | Image
 --- | --- | ---
 [enshrouded](https://github.com/dnonn/container-images/pkgs/container/enshrouded) | stable | ghcr.io/dnonn/enshrouded
 [project-zomboid](https://github.com/dnonn/container-images/pkgs/container/project-zomboid) | stable | ghcr.io/dnonn/project-zomboid
+[tubearchivist](https://github.com/dnonn/container-images/pkgs/container/tubearchivist) | stable | ghcr.io/dnonn/tubearchivist
