@@ -55,7 +55,7 @@ RUN if [ "$INSTALL_DEBUG" ] ; then \
     ; fi
 
 # make folders
-RUN mkdir /cache /youtube /app
+RUN mkdir /cache /youtube /app /app/staticfiles
 
 # copy config files
 COPY resources/nginx.conf /etc/nginx/sites-available/default
